@@ -6,9 +6,10 @@ class Database {
   constructor(config) {
     this.firebaseApp = firebase.initializeApp(config);
     this.db = this.firebaseApp.database();
-    this.subscribers = {};
   }
 
+  get app() { return this.firebaseApp; }
+  get database() { return this.db; }
   // get value at specific path
   get(path) {
     return this.db.ref(path).once('value');
