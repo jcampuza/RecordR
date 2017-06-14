@@ -8,10 +8,18 @@ class Recorder {
     this.record = this.record.bind(this);
   }
 
+  // Public
+  recordNewTrack() {
+    this.data.length = 0;
+    this.recorder = null;
+    this.recordAudio();
+  }
+
   recordAudio() {
     navigator.mediaDevices.getUserMedia({ audio: true }).then(this.record);
   }
 
+  // Public
   startRecording() {
     if (this.recorder) {
       console.log('Recorder: started recording');
@@ -21,6 +29,7 @@ class Recorder {
     }
   }
 
+  // Public
   stopRecording() {
     if (this.recorder) {
       console.log('Recorder: stopped recording');
@@ -30,7 +39,7 @@ class Recorder {
     }
   }
 
-  record(stream) {
+  initNewRecorder(stream) {
     console.log('Recorder: start recording');
     const options = { mimeType: 'video/webm;codecs=vp9' };
     const recorder = new window.MediaRecorder(stream, options);
@@ -40,6 +49,7 @@ class Recorder {
     recorder.addEventListener('stop', () => { this.createTempTrack(); });
 
     this.recorder = recorder;
+    this.startRecording();
   }
 
   storeChunk(e) {
@@ -49,6 +59,7 @@ class Recorder {
     }
   }
 
+  // Public
   createTempTrack() {
     const track = URL.createObjectURL(new Blob(this.data));
     console.log(track);
