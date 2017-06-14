@@ -1,9 +1,44 @@
 import * as firebase from 'firebase';
-import { firebaseConfig } from '../config.js';
+import firebaseConfig from '../config';
 
-// If trying to develop your own, make a new firebase instance (or existing) and
-// put that config here, or in a separate file like above
-const firebaseApp = firebase.initializeApp(firebaseConfig);
-const db = firebaseApp.database();
+class Database {
 
-export default db;
+  constructor(config) {
+    this.firebaseApp = firebase.initializeApp(config);
+    this.db = this.firebaseApp.database();
+    this.subscribers = {};
+  }
+
+  // get value at specific path
+  get(path) {
+    return this.db.ref(path).once('value');
+  }
+
+  // set a value at a specific path
+  // WARNING: THIS WILL OVERRIDE WHATEVER DATA MAY EXIST AT THIS LOCATION
+  // TODO: make this analogous to PUT, make separate POST that generates uid with the
+  //       ref.push() method
+  set(path, value) {
+    return this.db.ref(path).set(value);
+  }
+
+  // delete the data at the specified path
+  // WARNING: This will delete all child nodes of path as well
+  delete(path) {
+    const ref = this.db.ref(path);
+    return ref.remove();
+  }
+
+  // subscribe using firebase on
+  // returns an object that allows you to easily dispose of subscribers
+  subscribe(path, event, cb) {
+    const ref = this.db.ref(path);
+    ref.on(event, cb);
+
+    return {
+      unsubscribe() { ref.off(event, cb); },
+    };
+  }
+}
+
+export default new Database(firebaseConfig);
