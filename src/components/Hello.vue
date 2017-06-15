@@ -21,7 +21,7 @@
 <script>
 import TrackItem from './TrackItem';
 import tracks from '../recordList';
-import db from './models/Firebase';
+import db from '../models/Firebase';
 
 export default {
   name: 'hello',
