@@ -21,6 +21,7 @@
 <script>
 import TrackItem from './TrackItem';
 import tracks from '../recordList';
+import db from './models/Firebase';
 
 export default {
   name: 'hello',
@@ -35,10 +36,15 @@ export default {
   },
   mounted() {
     this.loading = true;
-    window.setTimeout(() => {
-      this.trackList = tracks.records;
-      this.loading = false;
-    }, 2000);
+    db.get('/tracks').then((tracks) => {
+      this.trackList = tracks;
+      this.loading = true;
+    })
+    // window.setTimeout(() => {
+    //   this.trackList = tracks.records;
+    //   this.loading = false;
+    // }, 2000);
+
   },
 
 };
